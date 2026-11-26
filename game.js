@@ -181,7 +181,7 @@ reset();
 const introLine = byId('intro-line');
 const listen = byId('listen');
 const line = introLine.textContent.trim();
-const speech = window.speechSynthesis;
+const narration = byId('intro-audio');
 const wordPieces = line.match(/\S+\s*/g);
 const wordEnds = [];
 let position = 0;
@@ -202,64 +202,50 @@ const wordSpans = wordPieces.map(piece => {
   return span;
 });
 introLine.replaceChildren(layoutLine, animatedLine);
-let typing;
-let speechRun = 0;
+let playbackRun = 0;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function showWords(count) {
   wordSpans.forEach((word, index) => word.classList.toggle('word-pending', index >= count));
 }
 
-function animateLine(interval) {
-  window.clearInterval(typing);
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  let count = 1;
-  showWords(count);
-  typing = window.setInterval(() => {
-    showWords(++count);
-    if (count >= wordSpans.length) window.clearInterval(typing);
-  }, interval);
+function updateWords() {
+  if (reducedMotion.matches || !Number.isFinite(narration.duration)) return;
+  const progress = Math.min(1, narration.currentTime / narration.duration);
+  const count = wordEnds.filter(end => end <= position * progress).length;
+  showWords(Math.min(count + 1, wordSpans.length));
 }
 
 function stopLine() {
-  speechRun++;
-  if (listen.getAttribute('aria-pressed') === 'true') speech?.cancel();
-  window.clearInterval(typing);
+  playbackRun++;
+  narration.pause();
   showWords(wordSpans.length);
   listen.textContent = '▶ Послушать';
   listen.setAttribute('aria-pressed', 'false');
 }
 
-listen.addEventListener('click', () => {
+narration.addEventListener('timeupdate', () => {
+  if (!narration.paused) updateWords();
+});
+narration.addEventListener('ended', stopLine);
+narration.addEventListener('error', stopLine);
+
+listen.addEventListener('click', async () => {
   if (listen.getAttribute('aria-pressed') === 'true') {
     stopLine();
     return;
   }
-  const run = ++speechRun;
-  animateLine(380);
-  if (!speech || !window.SpeechSynthesisUtterance) return;
-
-  const narration = new SpeechSynthesisUtterance(line);
-  const voices = speech.getVoices();
-  const russianVoices = voices.filter(voice => voice.lang.toLowerCase().startsWith('ru'));
-  const childVoice = russianVoices.find(voice => /child|kid|детск|реб[её]нок/i.test(voice.name));
-  const russian = childVoice || russianVoices[0];
-  narration.lang = 'ru-RU';
-  if (russian) narration.voice = russian;
-  narration.rate = .87;
-  narration.pitch = childVoice ? 1 : 1.62;
+  const run = ++playbackRun;
   listen.textContent = '■ Остановить';
   listen.setAttribute('aria-pressed', 'true');
+  if (!reducedMotion.matches) showWords(1);
 
-  narration.onboundary = event => {
-    if (run !== speechRun || event.name !== 'word' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    window.clearInterval(typing);
-    const next = wordEnds.findIndex(end => end > event.charIndex);
-    if (next >= 0) showWords(next + 1);
-  };
-  narration.onend = narration.onerror = () => {
-    if (run === speechRun) stopLine();
-  };
-  speech.speak(narration);
+  try {
+    narration.currentTime = 0;
+    await narration.play();
+  } catch {
+    if (run === playbackRun) stopLine();
+  }
 });
 
 byId('open-note').addEventListener('click', stopLine);
