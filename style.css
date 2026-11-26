@@ -90,9 +90,9 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 .hero-copy blockquote{background:#100d26bd}
 .hero-copy button{text-shadow:none}
 @media(max-width:780px){
-  .hero{align-items:flex-end;min-height:calc(100svh - 73px);padding:clamp(20px,5vw,42px);padding-top:clamp(255px,43svh,440px)}
+  .hero{align-items:flex-end;min-height:calc(100svh - 73px);padding:clamp(20px,5vw,42px);padding-top:clamp(175px,34svh,360px)}
   .hero-art img:first-child{object-position:38% 30%}
   .hero::before{background:linear-gradient(180deg,#100d2615 20%,#100d2677 40%,#100d26f5 73%,#100d26 100%)}
-  .hero-art img.hero-mascot{width:clamp(95px,27vw,160px);height:clamp(120px,23svh,220px);left:auto;right:7%;top:clamp(100px,18svh,185px);bottom:auto}
+  .hero-art img.hero-mascot{width:clamp(95px,27vw,160px);height:clamp(120px,23svh,220px);left:auto;right:7%;top:clamp(72px,15svh,155px);bottom:auto}
   .hero-copy{width:100%}
 }
