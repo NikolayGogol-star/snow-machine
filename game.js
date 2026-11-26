@@ -13,6 +13,7 @@ const poured = new Set();
 const note = byId('note');
 const pot = byId('pot');
 const ingredientSound = byId('ingredient-sound');
+const failedSound = byId('cauldron-failed');
 const finaleTrack = byId('finale-track');
 const introMusic = byId('intro-music');
 const labMusic = byId('lab-music');
@@ -21,6 +22,8 @@ let dragIndex = null;
 let audio;
 let musicGain;
 let effectsGain;
+let cauldronBuffer;
+let cauldronSource;
 let musicEnabled = true;
 let voicePlaying = false;
 let finalMusic = false;
@@ -44,6 +47,10 @@ const hz = midi => 440 * 2 ** ((midi - 69) / 12);
 let round = 0;
 
 function go(screen) {
+  if (screen !== 'mix') {
+    stopCauldronLoop();
+    failedSound.pause();
+  }
   finalMusic = screen === 'success';
   selectSceneMusic(screen);
   screens.forEach(id => { byId(id).hidden = id !== screen; });
@@ -123,13 +130,14 @@ function updateSoundLevels() {
   introMusic.volume = voicePlaying ? .09 : .31;
   labMusic.volume = .32;
   machineStart.volume = .62;
+  failedSound.volume = .65;
   finaleTrack.volume = machineStart.paused ? .55 : .17;
-  [introMusic, labMusic, machineStart, finaleTrack, ingredientSound].forEach(track => {
+  [introMusic, labMusic, machineStart, finaleTrack, ingredientSound, failedSound].forEach(track => {
     track.muted = !musicEnabled;
   });
   if (!audio) return;
   const time = audio.currentTime;
-  musicGain.gain.setTargetAtTime(musicEnabled && !finaleTrackActive && (!sceneMusic || sceneMusic.paused) ? (voicePlaying ? .16 : .64) : 0, time, .1);
+  musicGain.gain.setTargetAtTime(musicEnabled && !finaleTrackActive && !cauldronSource && (!sceneMusic || sceneMusic.paused) ? (voicePlaying ? .16 : .64) : 0, time, .1);
   effectsGain.gain.setTargetAtTime(musicEnabled ? .75 : 0, time, .04);
 }
 
@@ -170,6 +178,13 @@ function startSound() {
     effectsGain.connect(audio.destination);
     updateSoundLevels();
     window.setInterval(scheduleMusic, 90);
+    cauldronBuffer = fetch('cauldron-loop.wav')
+      .then(response => {
+        if (!response.ok) throw new Error('Cauldron audio unavailable');
+        return response.arrayBuffer();
+      })
+      .then(bytes => audio.decodeAudioData(bytes))
+      .catch(() => null);
   }
   audio.resume().then(scheduleMusic).catch(() => {});
 }
@@ -181,9 +196,30 @@ function splash() {
   ingredientSound.play().catch(() => {});
 }
 
-function growl() {
-  if (audio?.state !== 'running' || !musicEnabled) return;
-  sound(effectsGain, 104, 40, audio.currentTime + .28, .45, .12, 'triangle');
+async function startCauldronLoop() {
+  const currentRound = round;
+  const buffer = await cauldronBuffer;
+  if (!buffer || currentRound !== round || byId('mix').hidden || cauldronSource) return;
+  cauldronSource = audio.createBufferSource();
+  const volume = audio.createGain();
+  volume.gain.value = .33;
+  cauldronSource.buffer = buffer;
+  cauldronSource.loop = true;
+  cauldronSource.connect(volume).connect(effectsGain);
+  cauldronSource.start();
+  updateSoundLevels();
+}
+
+function stopCauldronLoop() {
+  if (!cauldronSource) return;
+  cauldronSource.stop();
+  cauldronSource = null;
+}
+
+function playFailedSound() {
+  if (!musicEnabled) return;
+  failedSound.currentTime = 0;
+  failedSound.play().catch(() => {});
 }
 
 function celebrationChime() {
@@ -236,7 +272,7 @@ function pour(index) {
   if (poured.size === ingredients.length) {
     const currentRound = round;
     pot.classList.add('grumble');
-    growl();
+    playFailedSound();
     byId('mix-status').textContent = 'Кррр… Бульк… Котелок ворчит!';
     window.setTimeout(() => {
       if (currentRound !== round) return;
@@ -290,7 +326,11 @@ function reset() {
 byId('open-note').addEventListener('click', () => note.showModal());
 byId('close-note').addEventListener('click', () => note.close());
 byId('start').addEventListener('click', () => { note.close(); go('lab'); });
-byId('next').addEventListener('click', () => { startSound(); go('mix'); });
+byId('next').addEventListener('click', () => {
+  startSound();
+  go('mix');
+  startCauldronLoop();
+});
 pot.addEventListener('dragover', event => {
   if (dragIndex === null) return;
   event.preventDefault();
