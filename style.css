@@ -295,3 +295,22 @@ body:has(#success:not([hidden])) main{max-width:none;padding:0}
   .finale-mascot{right:2%;top:29svh;bottom:auto;width:min(60vw,40svh)}
   .celebration::before{background:linear-gradient(0deg,#100d26 0%,#100d2699 27%,transparent 61%)}
 }
+
+.sound-toggle{
+  position:fixed;
+  z-index:4;
+  top:12px;
+  right:12px;
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  border:1px solid #fad68d80;
+  border-radius:50%;
+  background:#100d26e8;
+  color:var(--gold);
+  font-size:1.2rem;
+  line-height:1;
+}
+.sound-toggle[aria-pressed="false"] span{text-decoration:line-through;color:var(--muted)}
+body:not(:has(#intro:not([hidden]),#success:not([hidden]))) .top{padding-right:62px}

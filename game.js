@@ -14,9 +14,30 @@ const note = byId('note');
 const pot = byId('pot');
 let dragIndex = null;
 let audio;
+let musicGain;
+let effectsGain;
+let musicEnabled = true;
+let voicePlaying = false;
+let finalMusic = false;
+let nextBeatAt = 0;
+let beat = 0;
+const soundtrack = [
+  [62, 69, 74, 77, 76, 74, 69, 77],
+  [58, 65, 70, 74, 72, 70, 65, 74],
+  [65, 72, 77, 81, 79, 77, 72, 81],
+  [60, 67, 72, 76, 74, 72, 67, 76]
+];
+const finaleMelody = [
+  [65, 72, 77, 81, 84, 81, 79, 77],
+  [67, 74, 79, 82, 86, 82, 81, 79],
+  [70, 77, 82, 86, 89, 86, 84, 82],
+  [60, 67, 76, 79, 84, 79, 77, 76]
+];
+const hz = midi => 440 * 2 ** ((midi - 69) / 12);
 let round = 0;
 
 function go(screen) {
+  finalMusic = screen === 'success';
   screens.forEach(id => { byId(id).hidden = id !== screen; });
   document.querySelectorAll('.steps span').forEach((step, index) => {
     if (Math.min(screens.indexOf(screen), 2) === index) step.setAttribute('aria-current', 'step');
@@ -61,25 +82,93 @@ function makeJar(index, mixing) {
   return jar;
 }
 
-function growl() {
-  if (!audio || audio.state !== 'running') return;
-  const time = audio.currentTime;
-  const tone = audio.createOscillator();
-  const volume = audio.createGain();
-  tone.type = 'triangle';
-  tone.frequency.setValueAtTime(104, time);
-  tone.frequency.exponentialRampToValueAtTime(40, time + .48);
-  volume.gain.setValueAtTime(.0001, time);
-  volume.gain.exponentialRampToValueAtTime(.12, time + .065);
-  volume.gain.exponentialRampToValueAtTime(.0001, time + .51);
-  tone.connect(volume).connect(audio.destination);
-  tone.start(time);
-  tone.stop(time + .52);
+function sound(bus, frequency, endFrequency, time, length, peak, type = 'sine') {
+  const oscillator = audio.createOscillator();
+  const envelope = audio.createGain();
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, time);
+  oscillator.frequency.exponentialRampToValueAtTime(endFrequency, time + length);
+  envelope.gain.setValueAtTime(.0001, time);
+  envelope.gain.exponentialRampToValueAtTime(peak, time + Math.min(.024, length / 4));
+  envelope.gain.exponentialRampToValueAtTime(.0001, time + length);
+  oscillator.connect(envelope).connect(bus);
+  oscillator.start(time);
+  oscillator.stop(time + length + .01);
 }
+
+function scheduleMusic() {
+  if (audio.state !== 'running') return;
+  nextBeatAt = Math.max(nextBeatAt, audio.currentTime + .02);
+  while (nextBeatAt < audio.currentTime + .23) {
+    const melody = finalMusic ? finaleMelody : soundtrack;
+    const step = beat % 8;
+    const pitch = hz(melody[Math.floor(beat / 8) % melody.length][step]);
+    sound(musicGain, pitch, pitch, nextBeatAt, .85, step === 0 ? .045 : .064);
+    sound(musicGain, pitch * 2, pitch * 2, nextBeatAt, .31, .017);
+    if (step === 0) sound(musicGain, pitch / 2, pitch / 2, nextBeatAt, 2.1, .052, 'triangle');
+    beat++;
+    nextBeatAt += finalMusic ? .31 : .44;
+  }
+}
+
+function updateSoundLevels() {
+  if (!audio) return;
+  const time = audio.currentTime;
+  musicGain.gain.setTargetAtTime(musicEnabled ? (voicePlaying ? .16 : .64) : 0, time, .1);
+  effectsGain.gain.setTargetAtTime(musicEnabled ? .75 : 0, time, .04);
+}
+
+function startSound() {
+  if (!window.AudioContext) return;
+  if (!audio) {
+    audio = new AudioContext();
+    musicGain = audio.createGain();
+    effectsGain = audio.createGain();
+    musicGain.gain.value = 0;
+    effectsGain.gain.value = 0;
+    musicGain.connect(audio.destination);
+    effectsGain.connect(audio.destination);
+    updateSoundLevels();
+    window.setInterval(scheduleMusic, 90);
+  }
+  audio.resume().then(scheduleMusic).catch(() => {});
+}
+
+function splash(index) {
+  if (audio?.state !== 'running' || !musicEnabled) return;
+  const time = audio.currentTime;
+  const pitch = hz([72, 74, 76, 79, 81][index]);
+  sound(effectsGain, 265, 93, time, .22, .14);
+  sound(effectsGain, 190, 310, time + .095, .16, .055);
+  sound(effectsGain, pitch, pitch, time + .09, .43, .095);
+  sound(effectsGain, pitch * 1.5, pitch * 1.5, time + .17, .46, .055);
+}
+
+function growl() {
+  if (audio?.state !== 'running' || !musicEnabled) return;
+  sound(effectsGain, 104, 40, audio.currentTime + .28, .45, .12, 'triangle');
+}
+
+function celebrationChime() {
+  if (audio?.state !== 'running' || !musicEnabled) return;
+  [72, 76, 79, 84].forEach((note, index) => {
+    const pitch = hz(note);
+    sound(effectsGain, pitch, pitch, audio.currentTime + index * .12, .65, .085);
+  });
+}
+
+const soundToggle = byId('sound-toggle');
+soundToggle.addEventListener('click', () => {
+  musicEnabled = !musicEnabled;
+  soundToggle.setAttribute('aria-pressed', String(musicEnabled));
+  if (musicEnabled) startSound();
+  updateSoundLevels();
+});
 
 function pour(index) {
   if (poured.has(index) || byId('mix').hidden) return;
   poured.add(index);
+  splash(index);
   const jar = byId('mix-jars').children[index];
   jar.disabled = true;
   jar.draggable = false;
@@ -141,13 +230,7 @@ function reset() {
 byId('open-note').addEventListener('click', () => note.showModal());
 byId('close-note').addEventListener('click', () => note.close());
 byId('start').addEventListener('click', () => { note.close(); go('lab'); });
-byId('next').addEventListener('click', () => {
-  if (window.AudioContext) {
-    if (!audio) audio = new AudioContext();
-    audio.resume().catch(() => {});
-  }
-  go('mix');
-});
+byId('next').addEventListener('click', () => { startSound(); go('mix'); });
 pot.addEventListener('dragover', event => {
   if (dragIndex === null) return;
   event.preventDefault();
@@ -209,6 +292,7 @@ byId('spell').addEventListener('submit', event => {
     return;
   }
   go('success');
+  celebrationChime();
   makeSnow();
 });
 byId('restart').addEventListener('click', () => { reset(); go('intro'); });
@@ -265,6 +349,8 @@ function animateWords() {
 }
 
 function stopLine() {
+  voicePlaying = false;
+  updateSoundLevels();
   playbackRun++;
   window.cancelAnimationFrame(wordFrame);
   narration.pause();
@@ -286,6 +372,8 @@ listen.addEventListener('click', async () => {
     return;
   }
   const run = ++playbackRun;
+  voicePlaying = true;
+  updateSoundLevels();
   listen.textContent = '■ Остановить';
   listen.setAttribute('aria-pressed', 'true');
   if (!reducedMotion.matches) showWords(0);
@@ -311,6 +399,7 @@ function setStoryVisible(visible) {
 }
 
 discover.addEventListener('click', () => {
+  startSound();
   setStoryVisible(true);
   listen.focus({preventScroll:true});
   listen.click();
