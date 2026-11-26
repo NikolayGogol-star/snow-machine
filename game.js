@@ -5,8 +5,7 @@ const ingredients = [
   {name:'LIGHT', translation:'свет', x:50.7, y:1},
   {name:'JOY', translation:'радость', x:98, y:1},
   {name:'KINDNESS', translation:'доброта', x:25, y:97},
-  {name:'MAGIC', translation:'волшебство', x:73.5, y:97},
-  {name:'СЕКРЕТ', translation:'', x:50.7, y:1}
+  {name:'MAGIC', translation:'волшебство', x:73.5, y:97}
 ];
 const revealed = new Set();
 const poured = new Set();
@@ -28,21 +27,15 @@ function go(screen) {
 
 function makeJar(index, mixing) {
   const item = ingredients[index];
-  const secret = index === 5;
   const jar = document.createElement('button');
   jar.type = 'button';
-  jar.className = secret ? 'jar secret' : 'jar';
+  jar.className = 'jar';
   jar.setAttribute('aria-label', mixing ? 'Добавить ' + item.name : 'Открыть баночку ' + (index + 1));
   const art = document.createElement('span');
   art.className = 'jar-art';
   art.style.setProperty('--x', item.x + '%');
   art.style.setProperty('--y', item.y + '%');
   jar.append(art);
-  if (secret) {
-    const label = document.createElement('strong');
-    label.textContent = item.name;
-    jar.append(label);
-  }
 
   if (mixing) {
     jar.draggable = true;
@@ -90,7 +83,7 @@ function pour(index) {
   jar.disabled = true;
   jar.draggable = false;
   jar.classList.add('poured');
-  byId('mix-status').textContent = 'Добавлено ' + poured.size + ' из 6';
+  byId('mix-status').textContent = 'Добавлено ' + poured.size + ' из ' + ingredients.length;
   if (poured.size === ingredients.length) {
     const currentRound = round;
     pot.classList.add('grumble');
@@ -98,7 +91,7 @@ function pour(index) {
     byId('mix-status').textContent = 'Кррр… Бульк… Котелок ворчит!';
     window.setTimeout(() => {
       if (currentRound !== round) return;
-      byId('mix-status').textContent = 'Все 6 баночек в котелке. Чего-то не хватает…';
+      byId('mix-status').textContent = 'Все баночки в котелке. Чего-то не хватает…';
       byId('spell').hidden = false;
       byId('word').focus();
     }, 700);
@@ -133,10 +126,10 @@ function reset() {
   poured.clear();
   clearDrop();
   byId('snow').replaceChildren();
-  byId('lab-jars').replaceChildren(...ingredients.slice(0, 5).map((_, index) => makeJar(index, false)));
+  byId('lab-jars').replaceChildren(...ingredients.map((_, index) => makeJar(index, false)));
   byId('mix-jars').replaceChildren(...ingredients.map((_, index) => makeJar(index, true)));
   byId('lab-count').textContent = 'Найдено 0 из 5';
-  byId('mix-status').textContent = 'Добавлено 0 из 6';
+  byId('mix-status').textContent = 'Добавлено 0 из ' + ingredients.length;
   byId('next').disabled = true;
   pot.classList.remove('grumble');
   byId('spell').hidden = true;
