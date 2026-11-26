@@ -314,3 +314,6 @@ body:has(#success:not([hidden])) main{max-width:none;padding:0}
 }
 .sound-toggle[aria-pressed="false"] span{text-decoration:line-through;color:var(--muted)}
 body:not(:has(#intro:not([hidden]),#success:not([hidden]))) .top{padding-right:62px}
+
+.finale-credit{font-size:.75rem;margin:12px 0 0;color:#eee3fc}
+.finale-credit a{color:inherit;text-underline-offset:3px}

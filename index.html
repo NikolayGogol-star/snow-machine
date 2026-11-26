@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
-<link rel="stylesheet" href="style.css?v=17">
-<script src="game.js?v=17" defer></script>
+<link rel="stylesheet" href="style.css?v=18">
+<script src="game.js?v=18" defer></script>
 </head>
 <body>
 <header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
@@ -53,6 +53,7 @@
   </form>
 </section>
 <section id="success" class="screen celebration" hidden>
+  <audio id="finale-track" src="first-snow.mp3" preload="auto"></audio>
   <img class="finale-art" src="machine-repaired.jpg" alt="Работающая снежная машина выпускает поток ледяных кристаллов">
   <img class="finale-mascot" src="govorusha-happy.png" alt="Говоруша радостно расправляет крылья">
   <div class="finale-copy">
@@ -60,6 +61,7 @@
     <h1 tabindex="-1">Снег вернулся!</h1>
     <p class="finale-line">Ура, младшие учёные! Вы спасли рождественский снег. Смотрите, как красиво!</p>
     <button id="restart" class="secondary">Сыграть ещё раз</button>
+    <p class="finale-credit"><a href="https://ikson.com/music" target="_blank" rel="noopener">First Snow — TELL YOUR STORY music by Ikson™</a></p>
   </div>
 </section>
 </main>

@@ -12,6 +12,7 @@ const revealed = new Set();
 const poured = new Set();
 const note = byId('note');
 const pot = byId('pot');
+const finaleTrack = byId('finale-track');
 let dragIndex = null;
 let audio;
 let musicGain;
@@ -19,6 +20,7 @@ let effectsGain;
 let musicEnabled = true;
 let voicePlaying = false;
 let finalMusic = false;
+let finaleTrackActive = false;
 let nextBeatAt = 0;
 let beat = 0;
 const soundtrack = [
@@ -114,7 +116,7 @@ function scheduleMusic() {
 function updateSoundLevels() {
   if (!audio) return;
   const time = audio.currentTime;
-  musicGain.gain.setTargetAtTime(musicEnabled ? (voicePlaying ? .16 : .64) : 0, time, .1);
+  musicGain.gain.setTargetAtTime(musicEnabled && !finaleTrackActive ? (voicePlaying ? .16 : .64) : 0, time, .1);
   effectsGain.gain.setTargetAtTime(musicEnabled ? .75 : 0, time, .04);
 }
 
@@ -157,9 +159,31 @@ function celebrationChime() {
   });
 }
 
+function stopFinaleTrack() {
+  finaleTrackActive = false;
+  finaleTrack.pause();
+  updateSoundLevels();
+}
+
+function playFinaleTrack() {
+  finaleTrackActive = true;
+  finaleTrack.currentTime = 0;
+  finaleTrack.volume = .55;
+  finaleTrack.muted = !musicEnabled;
+  updateSoundLevels();
+  finaleTrack.play().catch(() => {
+    if (!finaleTrackActive) return;
+    stopFinaleTrack();
+    celebrationChime();
+  });
+}
+
+finaleTrack.addEventListener('ended', stopFinaleTrack);
+
 const soundToggle = byId('sound-toggle');
 soundToggle.addEventListener('click', () => {
   musicEnabled = !musicEnabled;
+  finaleTrack.muted = !musicEnabled;
   soundToggle.setAttribute('aria-pressed', String(musicEnabled));
   if (musicEnabled) startSound();
   updateSoundLevels();
@@ -292,7 +316,7 @@ byId('spell').addEventListener('submit', event => {
     return;
   }
   go('success');
-  celebrationChime();
+  playFinaleTrack();
   makeSnow();
 });
 byId('restart').addEventListener('click', () => { reset(); go('intro'); });
@@ -406,5 +430,6 @@ discover.addEventListener('click', () => {
 });
 byId('restart').addEventListener('click', () => {
   stopLine();
+  stopFinaleTrack();
   setStoryVisible(false);
 });
