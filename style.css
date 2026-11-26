@@ -85,7 +85,7 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 .hero-art{position:absolute;inset:-73px 0 0;z-index:-2;border:0;border-radius:0;box-shadow:none}
 .hero-art img:first-child{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center}
 .hero::before{content:"";position:absolute;inset:-73px 0 0;z-index:-1;background:linear-gradient(90deg,#100d2610 26%,#100d2699 56%,#100d26eb 100%);pointer-events:none}
-.hero-art img.hero-mascot{width:clamp(100px,18vw,245px);height:38%;right:auto;left:35%;bottom:8%}
+.hero-art img.hero-mascot{width:clamp(260px,44vw,650px);height:73%;right:auto;left:3%;bottom:7%}
 .hero-copy{width:min(100%,510px);padding:0;text-shadow:0 2px 12px #100d26}
 .hero-copy blockquote{background:#100d26bd}
 .hero-copy button{text-shadow:none}
@@ -93,7 +93,7 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
   .hero{align-items:flex-end;min-height:calc(100svh - 73px);padding:clamp(20px,5vw,42px);padding-top:clamp(175px,34svh,360px)}
   .hero-art img:first-child{object-position:38% 30%}
   .hero::before{background:linear-gradient(180deg,#100d2615 20%,#100d2677 40%,#100d26f5 73%,#100d26 100%)}
-  .hero-art img.hero-mascot{width:clamp(95px,27vw,160px);height:clamp(120px,23svh,220px);left:auto;right:7%;top:clamp(72px,15svh,155px);bottom:auto}
+  .hero-art img.hero-mascot{width:min(56vw,370px);height:clamp(155px,34svh,345px);left:auto;right:3%;top:clamp(56px,9svh,86px);bottom:auto}
   .hero-copy{width:100%}
 }
 
@@ -108,4 +108,4 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 .hero-art img.hero-mascot{animation:sob 2.1s ease-in-out infinite;transform-origin:bottom center}
 .hero.speaking .hero-mascot{animation:sob .52s ease-in-out infinite}
 @keyframes sob{0%,100%{transform:none}23%{transform:translateY(-2px) rotate(-1.3deg)}37%{transform:translateY(-4px) rotate(1deg)}52%{transform:translateY(-1px)}}
-@media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}.hero-art img.hero-mascot{top:clamp(67px,13svh,145px);height:clamp(95px,20svh,200px)}}
+@media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}}
