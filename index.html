@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
-<link rel="stylesheet" href="style.css?v=3">
-<script src="game.js" defer></script>
+<link rel="stylesheet" href="style.css?v=4">
+<script src="game.js?v=4" defer></script>
 </head>
 <body>
 <header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
 <main>
 <section id="intro" class="screen hero">
-  <div class="hero-art"><img src="machine.jpg" alt="Волшебная машина для снега в секретной лаборатории"><img class="hero-mascot" src="govorusha.png" alt="Говоруша"></div>
+  <div class="hero-art"><img src="machine.jpg" alt="Волшебная машина для снега в секретной лаборатории"><img class="hero-mascot" src="govorusha-sad.png" alt="Говоруша плачет"></div>
   <div class="hero-copy">
     <p class="eyebrow"><span class="signal"></span> Срочный сигнал</p>
     <h1 tabindex="-1">Операция<br>«Рождественский <em>снег»</em></h1>
-    <blockquote><b>Говоруша</b><p>Волшебная машина, которая создаёт рождественский снег, сломалась! Все снежинки исчезли, а главный учёный-эльф пропал, оставив только загадочную записку.</p></blockquote>
+    <blockquote><div class="speaker"><b>Говоруша</b><button type="button" class="listen" id="listen" aria-pressed="false">▶ Послушать</button></div><p id="intro-line">Волшебная машина, которая создаёт рождественский снег, сломалась! Все снежинки исчезли, а главный учёный-эльф пропал, оставив только загадочную записку.</p></blockquote>
     <button class="primary" id="open-note">Открыть записку <span aria-hidden="true">↗</span></button>
   </div>
 </section>

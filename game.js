@@ -177,3 +177,90 @@ byId('spell').addEventListener('submit', event => {
 byId('restart').addEventListener('click', () => { reset(); go('intro'); });
 
 reset();
+
+const introLine = byId('intro-line');
+const listen = byId('listen');
+const line = introLine.textContent.trim();
+const speech = window.speechSynthesis;
+const wordPieces = line.match(/\S+\s*/g);
+const wordEnds = [];
+let position = 0;
+const animatedLine = document.createElement('span');
+const layoutLine = document.createElement('span');
+layoutLine.className = 'line-space';
+layoutLine.setAttribute('aria-hidden', 'true');
+layoutLine.textContent = line;
+animatedLine.setAttribute('aria-hidden', 'true');
+introLine.setAttribute('aria-label', line);
+
+const wordSpans = wordPieces.map(piece => {
+  const span = document.createElement('span');
+  span.textContent = piece;
+  animatedLine.append(span);
+  position += piece.length;
+  wordEnds.push(position);
+  return span;
+});
+introLine.replaceChildren(layoutLine, animatedLine);
+let typing;
+let speechRun = 0;
+
+function showWords(count) {
+  wordSpans.forEach((word, index) => word.classList.toggle('word-pending', index >= count));
+}
+
+function animateLine(interval) {
+  window.clearInterval(typing);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let count = 1;
+  showWords(count);
+  typing = window.setInterval(() => {
+    showWords(++count);
+    if (count >= wordSpans.length) window.clearInterval(typing);
+  }, interval);
+}
+
+function stopLine() {
+  speechRun++;
+  if (listen.getAttribute('aria-pressed') === 'true') speech?.cancel();
+  window.clearInterval(typing);
+  showWords(wordSpans.length);
+  listen.textContent = '▶ Послушать';
+  listen.setAttribute('aria-pressed', 'false');
+  byId('intro').classList.remove('speaking');
+}
+
+listen.addEventListener('click', () => {
+  if (listen.getAttribute('aria-pressed') === 'true') {
+    stopLine();
+    return;
+  }
+  const run = ++speechRun;
+  animateLine(380);
+  if (!speech || !window.SpeechSynthesisUtterance) return;
+
+  const narration = new SpeechSynthesisUtterance(line);
+  const voices = speech.getVoices();
+  const russian = voices.find(voice => voice.lang.toLowerCase().startsWith('ru'));
+  narration.lang = 'ru-RU';
+  if (russian) narration.voice = russian;
+  narration.rate = .92;
+  listen.textContent = '■ Остановить';
+  listen.setAttribute('aria-pressed', 'true');
+  byId('intro').classList.add('speaking');
+
+  narration.onboundary = event => {
+    if (run !== speechRun || event.name !== 'word' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    window.clearInterval(typing);
+    const next = wordEnds.findIndex(end => end > event.charIndex);
+    if (next >= 0) showWords(next + 1);
+  };
+  narration.onend = narration.onerror = () => {
+    if (run === speechRun) stopLine();
+  };
+  speech.speak(narration);
+});
+
+byId('open-note').addEventListener('click', stopLine);
+byId('restart').addEventListener('click', () => animateLine(130));
+animateLine(130);

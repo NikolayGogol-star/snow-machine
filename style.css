@@ -96,3 +96,16 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
   .hero-art img.hero-mascot{width:clamp(95px,27vw,160px);height:clamp(120px,23svh,220px);left:auto;right:7%;top:clamp(72px,15svh,155px);bottom:auto}
   .hero-copy{width:100%}
 }
+
+.speaker{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.speaker b{margin:0}
+.listen{border:1px solid #ffdb8f70;border-radius:8px;background:#211731;color:var(--gold);padding:5px 9px;font-size:.78rem;font-weight:700}
+.listen:hover{background:#3e2a49}
+#intro-line{display:grid}
+#intro-line>span{grid-area:1/1}
+.line-space{visibility:hidden}
+.word-pending{visibility:hidden}
+.hero-art img.hero-mascot{animation:sob 2.1s ease-in-out infinite;transform-origin:bottom center}
+.hero.speaking .hero-mascot{animation:sob .52s ease-in-out infinite}
+@keyframes sob{0%,100%{transform:none}23%{transform:translateY(-2px) rotate(-1.3deg)}37%{transform:translateY(-4px) rotate(1deg)}52%{transform:translateY(-1px)}}
+@media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}.hero-art img.hero-mascot{top:clamp(67px,13svh,145px);height:clamp(95px,20svh,200px)}}
