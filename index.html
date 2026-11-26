@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
 <link rel="stylesheet" href="style.css?v=18">
-<script src="game.js?v=18" defer></script>
+<script src="game.js?v=19" defer></script>
 </head>
 <body>
 <header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
@@ -17,12 +17,14 @@
     
     <h1 class="visually-hidden" tabindex="-1">Операция «Рождественский снег»</h1>
     <button class="primary" id="discover">Узнать, что случилось <span aria-hidden="true">→</span></button>
+    <audio id="intro-music" src="intro-music.mp3" preload="auto" loop></audio>
     <audio id="intro-audio" src="govorusha-voice.m4a" preload="auto"></audio>
     <blockquote id="intro-bubble" hidden><div class="speaker"><b>Говоруша</b><button type="button" class="listen" id="listen" aria-pressed="false">▶ Послушать</button></div><p id="intro-line">Волшебная машина, которая создаёт рождественский снег, сломалась! Все снежинки исчезли, а главный учёный-эльф пропал, оставив только загадочную записку.</p></blockquote>
     <button class="primary" id="open-note" hidden>Открыть записку <span aria-hidden="true">↗</span></button>
   </div>
 </section>
 <section id="lab" class="screen centered" hidden>
+  <audio id="lab-music" src="lab-music.mp3" preload="auto" loop></audio>
   <p class="eyebrow">Секретная лаборатория</p>
   <h1 tabindex="-1">Пять ингредиентов</h1>
   <div class="lab-dialogue">
@@ -53,6 +55,7 @@
   </form>
 </section>
 <section id="success" class="screen celebration" hidden>
+  <audio id="machine-start" src="machine-start.mp3" preload="auto"></audio>
   <audio id="finale-track" src="first-snow.mp3" preload="auto"></audio>
   <img class="finale-art" src="machine-repaired.jpg" alt="Работающая снежная машина выпускает поток ледяных кристаллов">
   <img class="finale-mascot" src="govorusha-happy.png" alt="Говоруша радостно расправляет крылья">

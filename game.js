@@ -13,6 +13,9 @@ const poured = new Set();
 const note = byId('note');
 const pot = byId('pot');
 const finaleTrack = byId('finale-track');
+const introMusic = byId('intro-music');
+const labMusic = byId('lab-music');
+const machineStart = byId('machine-start');
 let dragIndex = null;
 let audio;
 let musicGain;
@@ -21,6 +24,7 @@ let musicEnabled = true;
 let voicePlaying = false;
 let finalMusic = false;
 let finaleTrackActive = false;
+let sceneMusic = introMusic;
 let nextBeatAt = 0;
 let beat = 0;
 const soundtrack = [
@@ -40,6 +44,7 @@ let round = 0;
 
 function go(screen) {
   finalMusic = screen === 'success';
+  selectSceneMusic(screen);
   screens.forEach(id => { byId(id).hidden = id !== screen; });
   document.querySelectorAll('.steps span').forEach((step, index) => {
     if (Math.min(screens.indexOf(screen), 2) === index) step.setAttribute('aria-current', 'step');
@@ -114,14 +119,46 @@ function scheduleMusic() {
 }
 
 function updateSoundLevels() {
+  introMusic.volume = voicePlaying ? .09 : .31;
+  labMusic.volume = .32;
+  machineStart.volume = .62;
+  finaleTrack.volume = machineStart.paused ? .55 : .17;
+  [introMusic, labMusic, machineStart, finaleTrack].forEach(track => {
+    track.muted = !musicEnabled;
+  });
   if (!audio) return;
   const time = audio.currentTime;
-  musicGain.gain.setTargetAtTime(musicEnabled && !finaleTrackActive ? (voicePlaying ? .16 : .64) : 0, time, .1);
+  musicGain.gain.setTargetAtTime(musicEnabled && !finaleTrackActive && (!sceneMusic || sceneMusic.paused) ? (voicePlaying ? .16 : .64) : 0, time, .1);
   effectsGain.gain.setTargetAtTime(musicEnabled ? .75 : 0, time, .04);
 }
 
+function selectSceneMusic(screen) {
+  const nextMusic = screen === 'intro' ? introMusic : screen === 'lab' ? labMusic : null;
+  if (sceneMusic !== nextMusic && sceneMusic) {
+    sceneMusic.pause();
+    sceneMusic.currentTime = 0;
+  }
+  sceneMusic = nextMusic;
+  if (sceneMusic) playSceneMusic();
+  updateSoundLevels();
+}
+
+function playSceneMusic() {
+  if (sceneMusic) sceneMusic.play().catch(updateSoundLevels);
+}
+
+introMusic.addEventListener('playing', updateSoundLevels);
+labMusic.addEventListener('playing', updateSoundLevels);
+machineStart.addEventListener('playing', updateSoundLevels);
+machineStart.addEventListener('ended', updateSoundLevels);
+machineStart.addEventListener('error', updateSoundLevels);
+
 function startSound() {
-  if (!window.AudioContext) return;
+  playSceneMusic();
+  if (!window.AudioContext) {
+    updateSoundLevels();
+    return;
+  }
   if (!audio) {
     audio = new AudioContext();
     musicGain = audio.createGain();
@@ -162,14 +199,15 @@ function celebrationChime() {
 function stopFinaleTrack() {
   finaleTrackActive = false;
   finaleTrack.pause();
+  machineStart.pause();
   updateSoundLevels();
 }
 
 function playFinaleTrack() {
   finaleTrackActive = true;
   finaleTrack.currentTime = 0;
-  finaleTrack.volume = .55;
-  finaleTrack.muted = !musicEnabled;
+  machineStart.currentTime = 0;
+  machineStart.play().catch(updateSoundLevels);
   updateSoundLevels();
   finaleTrack.play().catch(() => {
     if (!finaleTrackActive) return;
@@ -183,7 +221,6 @@ finaleTrack.addEventListener('ended', stopFinaleTrack);
 const soundToggle = byId('sound-toggle');
 soundToggle.addEventListener('click', () => {
   musicEnabled = !musicEnabled;
-  finaleTrack.muted = !musicEnabled;
   soundToggle.setAttribute('aria-pressed', String(musicEnabled));
   if (musicEnabled) startSound();
   updateSoundLevels();
