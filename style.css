@@ -75,7 +75,7 @@ dialog .primary:hover{color:#24162c}
 @media(max-width:550px){.steps i{display:none}.shelf,.mix-shelf{grid-template-columns:repeat(3,minmax(0,1fr));max-width:340px;gap:8px}.jar{border-radius:12px}.secret strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}.flake{animation:none!important;top:var(--rest)}}
 .hero-art{position:relative;isolation:isolate}
-.hero-art img.hero-mascot{position:absolute;right:4%;bottom:7%;width:28%;height:53%;aspect-ratio:auto;object-fit:contain;object-position:bottom;filter:drop-shadow(0 9px 9px #17102dba)}
+
 
 /* The opening illustration fills the viewport behind the story controls. */
 body:has(#intro:not([hidden])){background:#100d26}
@@ -85,7 +85,7 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 .hero-art{position:absolute;inset:-73px 0 0;z-index:-2;border:0;border-radius:0;box-shadow:none}
 .hero-art img:first-child{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center}
 .hero::before{content:"";position:absolute;inset:-73px 0 0;z-index:-1;background:linear-gradient(90deg,#100d2610 26%,#100d2699 56%,#100d26eb 100%);pointer-events:none}
-.hero-art img.hero-mascot{width:clamp(260px,44vw,650px);height:73%;right:auto;left:3%;bottom:7%}
+
 .hero-copy{width:min(100%,510px);padding:0;text-shadow:0 2px 12px #100d26}
 .hero-copy blockquote{background:#100d26bd}
 .hero-copy button{text-shadow:none}
@@ -93,7 +93,7 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
   .hero{align-items:flex-end;min-height:calc(100svh - 73px);padding:clamp(20px,5vw,42px);padding-top:clamp(175px,34svh,360px)}
   .hero-art img:first-child{object-position:38% 30%}
   .hero::before{background:linear-gradient(180deg,#100d2615 20%,#100d2677 40%,#100d26f5 73%,#100d26 100%)}
-  .hero-art img.hero-mascot{width:min(56vw,370px);height:clamp(155px,34svh,345px);left:auto;right:3%;top:clamp(56px,9svh,86px);bottom:auto}
+
   .hero-copy{width:100%}
 }
 
@@ -107,7 +107,7 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 .word-pending{visibility:hidden}
 .hero-art img.hero-mascot{animation:sob 2.1s ease-in-out infinite;transform-origin:bottom center}
 .hero.speaking .hero-mascot{animation:sob .52s ease-in-out infinite}
-@keyframes sob{0%,100%{transform:none}23%{transform:translateY(-2px) rotate(-1.3deg)}37%{transform:translateY(-4px) rotate(1deg)}52%{transform:translateY(-1px)}}
+@keyframes sob{0%,100%{transform:none}23%{transform:scaleY(.992) rotate(-.65deg)}37%{transform:scaleY(.976) rotate(.55deg)}52%{transform:scaleY(.993)}}
 @media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}}
 
 .hero-copy blockquote{
@@ -148,14 +148,51 @@ body:has(#intro:not([hidden])) .top{display:none}
 .hero.splash::before{background:linear-gradient(180deg,transparent 58%,#100d26b3 95%)}
 .hero.splash{align-items:flex-end;justify-content:center;padding-bottom:clamp(40px,10svh,110px)}
 .hero.splash .hero-copy{width:auto}
-.hero.splash .hero-mascot{left:auto;right:9%;bottom:18%;height:72%;width:min(56vw,680px)}
+
 .hero:not(.splash) .hero-copy{margin-top:6vh}
 .hero-copy blockquote{animation:enter .28s ease both}
 @media(max-width:780px){
   .hero.splash{padding-top:24px}
-  .hero.splash .hero-mascot{top:auto;bottom:22%;right:3%;width:min(77vw,540px);height:min(58svh,520px)}
+
   .hero:not(.splash){padding-top:max(210px,40svh)}
   .hero:not(.splash) .hero-copy{margin-top:0}
-  .hero:not(.splash) .hero-mascot{top:clamp(23px,6svh,65px)}
+
   .hero-copy #open-note{margin-top:0}
+}
+
+/* The sprite and its contact shadow share a floor position. */
+.mascot-stage{
+  position:absolute;
+  bottom:8%;
+  left:14%;
+  width:min(44vw,66svh);
+  aspect-ratio:1;
+}
+.mascot-stage::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:1.8%;
+  width:53%;
+  height:6%;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse,#080614e8 12%,#1c101ac0 38%,transparent 72%);
+}
+.hero-art img.hero-mascot{
+  position:relative;
+  width:100%;
+  height:100%;
+  aspect-ratio:1;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 4px #120c22a0);
+}
+.hero.splash .mascot-stage{left:auto;right:8%;bottom:13%;width:min(55vw,72svh)}
+@media(max-width:780px){
+  .hero.splash .mascot-stage{right:2%;bottom:21%;width:min(76vw,52svh)}
+  .hero-art img:first-child{object-position:73% bottom}
+  .hero:not(.splash){justify-content:flex-end;padding-top:0}
+  .hero:not(.splash) .hero-art{bottom:min(220px,34svh)}
+  .hero:not(.splash) .mascot-stage{left:auto;right:3%;bottom:2%;width:min(63vw,42svh)}
+  .hero:not(.splash)::before{background:linear-gradient(180deg,transparent 49%,#100d2666 62%,#100d26 76%)}
 }
