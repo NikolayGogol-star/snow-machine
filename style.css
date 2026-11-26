@@ -56,8 +56,6 @@ blockquote p,.speech p{margin:0}
 .answer input{min-width:0;width:100%;aspect-ratio:1;padding:0;box-sizing:border-box;border-radius:7px;border:1px solid #b5a1e170;background:#100d26;color:var(--ink);text-align:center;font-size:clamp(1rem,3.8vw,1.5rem);font-weight:750}
 #feedback{margin:10px 0 0;color:#ffcfb8}
 #feedback:empty{display:none}
-.joyful-owl{width:min(280px,64vw);height:clamp(180px,32vh,300px);margin:auto;background:url(govorusha.png) center/contain no-repeat;animation:cheer 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 32px #c2a3ff70)}
-@keyframes cheer{to{transform:translateY(-9px) rotate(3deg)}}
 #snow{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:3}
 .flake{position:absolute;top:-2rem;color:#e3f7ff;text-shadow:0 0 12px #a8e3ff;animation:fall linear infinite}
 @keyframes fall{to{transform:translate(7vw,110vh) rotate(210deg)}}
@@ -241,4 +239,59 @@ body:has(#intro:not([hidden])) .top{display:none}
   height:24px;
   background:#fff4df;
   clip-path:polygon(100% 0,100% 100%,0 68%);
+}
+
+body:has(#success:not([hidden])) .top{display:none}
+body:has(#success:not([hidden])) main{max-width:none;padding:0}
+.celebration{
+  position:relative;
+  isolation:isolate;
+  display:flex;
+  align-items:flex-end;
+  min-height:100svh;
+  overflow:hidden;
+  padding:clamp(20px,5vw,78px);
+  animation:none;
+}
+.finale-art{
+  position:absolute;
+  inset:0;
+  z-index:-3;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+.celebration::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(0deg,#100d26e6,transparent 62%);
+}
+.finale-mascot{
+  position:absolute;
+  z-index:-2;
+  right:7%;
+  bottom:12%;
+  width:min(40vw,58svh,540px);
+  aspect-ratio:1;
+  object-fit:contain;
+  filter:drop-shadow(0 12px 14px #100d268c);
+  animation:celebrate 2.5s ease-in-out infinite;
+}
+@keyframes celebrate{
+  0%,55%,100%{transform:none}
+  20%{transform:translateY(-15px) rotate(3deg)}
+  38%{transform:translateY(-4px) rotate(-1deg)}
+}
+.finale-copy{max-width:640px;text-shadow:0 2px 14px #100d26}
+.finale-line{font-size:clamp(1rem,2vw,1.35rem);line-height:1.5;margin:12px 0 18px}
+.finale-copy .secondary{background:#100d26bf}
+@media(max-width:680px){
+  .celebration{min-height:100svh;padding-top:66svh;text-align:center;justify-content:center}
+  .finale-art{object-position:43% center}
+  .finale-mascot{right:2%;top:29svh;bottom:auto;width:min(60vw,40svh)}
+  .celebration::before{background:linear-gradient(0deg,#100d26 0%,#100d2699 27%,transparent 61%)}
 }
