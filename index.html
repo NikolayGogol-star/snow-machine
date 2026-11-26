@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
 <link rel="stylesheet" href="style.css?v=18">
-<script src="game.js?v=19" defer></script>
+<script src="game.js?v=20" defer></script>
 </head>
 <body>
 <header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
@@ -44,6 +44,7 @@
   <h1 tabindex="-1">Волшебный котелок</h1>
   <p class="hint">Перетащите баночки в котелок или нажмите на них.</p>
   <div id="mix-jars" class="shelf mix-shelf"></div>
+  <audio id="ingredient-sound" src="ingredient-sound.mp3" preload="auto"></audio>
   <div id="pot" class="pot" role="img" aria-label="Волшебный котелок"><div class="pot-picture"></div></div>
   <p class="counter" id="mix-status" role="status">Добавлено 0 из 5</p>
   <form id="spell" hidden>

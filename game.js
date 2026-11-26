@@ -12,6 +12,7 @@ const revealed = new Set();
 const poured = new Set();
 const note = byId('note');
 const pot = byId('pot');
+const ingredientSound = byId('ingredient-sound');
 const finaleTrack = byId('finale-track');
 const introMusic = byId('intro-music');
 const labMusic = byId('lab-music');
@@ -123,7 +124,7 @@ function updateSoundLevels() {
   labMusic.volume = .32;
   machineStart.volume = .62;
   finaleTrack.volume = machineStart.paused ? .55 : .17;
-  [introMusic, labMusic, machineStart, finaleTrack].forEach(track => {
+  [introMusic, labMusic, machineStart, finaleTrack, ingredientSound].forEach(track => {
     track.muted = !musicEnabled;
   });
   if (!audio) return;
@@ -173,14 +174,11 @@ function startSound() {
   audio.resume().then(scheduleMusic).catch(() => {});
 }
 
-function splash(index) {
-  if (audio?.state !== 'running' || !musicEnabled) return;
-  const time = audio.currentTime;
-  const pitch = hz([72, 74, 76, 79, 81][index]);
-  sound(effectsGain, 265, 93, time, .22, .14);
-  sound(effectsGain, 190, 310, time + .095, .16, .055);
-  sound(effectsGain, pitch, pitch, time + .09, .43, .095);
-  sound(effectsGain, pitch * 1.5, pitch * 1.5, time + .17, .46, .055);
+function splash() {
+  if (!musicEnabled) return;
+  ingredientSound.volume = .7;
+  ingredientSound.currentTime = 0;
+  ingredientSound.play().catch(() => {});
 }
 
 function growl() {
@@ -229,7 +227,7 @@ soundToggle.addEventListener('click', () => {
 function pour(index) {
   if (poured.has(index) || byId('mix').hidden) return;
   poured.add(index);
-  splash(index);
+  splash();
   const jar = byId('mix-jars').children[index];
   jar.disabled = true;
   jar.draggable = false;
@@ -272,6 +270,7 @@ function makeSnow() {
 }
 
 function reset() {
+  ingredientSound.pause();
   round++;
   revealed.clear();
   poured.clear();
