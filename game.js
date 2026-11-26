@@ -87,6 +87,7 @@ function makeJar(index, mixing) {
     jar.addEventListener('dragend', clearDrop);
   } else {
     jar.addEventListener('click', () => {
+      ringIngredient(index);
       if (revealed.has(index)) return;
       revealed.add(index);
       jar.classList.add('revealed');
@@ -188,6 +189,15 @@ function startSound() {
       .catch(() => null);
   }
   audio.resume().then(scheduleMusic).catch(() => {});
+}
+
+function ringIngredient(index) {
+  if (!musicEnabled || audio?.state !== 'running') return;
+  const time = audio.currentTime;
+  const pitch = hz([76, 79, 81, 84, 86][index]);
+  sound(effectsGain, pitch, pitch, time, .27, .14);
+  sound(effectsGain, pitch * 1.5, pitch * 1.5, time + .07, .32, .095);
+  sound(effectsGain, pitch * 2, pitch * 2, time + .14, .36, .045);
 }
 
 function splash() {
