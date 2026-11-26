@@ -183,8 +183,11 @@ const listen = byId('listen');
 const line = introLine.textContent.trim();
 const narration = byId('intro-audio');
 const wordPieces = line.match(/\S+\s*/g);
-const wordEnds = [];
-let position = 0;
+// Word starts in govorusha-voice.m4a, in display order. «Учёный-эльф» is one displayed word.
+const wordStarts = [
+  1.84, 3.08, 3.86, 4.54, 5.14, 5.92, 6.68,
+  8.26, 8.70, 9.34, 10.66, 10.70, 11.16, 12.00, 13.46, 14.16, 14.44, 15.52
+];
 const animatedLine = document.createElement('span');
 const layoutLine = document.createElement('span');
 layoutLine.className = 'line-space';
@@ -195,37 +198,47 @@ introLine.setAttribute('aria-label', line);
 
 const wordSpans = wordPieces.map(piece => {
   const span = document.createElement('span');
+  span.className = 'intro-word';
   span.textContent = piece;
   animatedLine.append(span);
-  position += piece.length;
-  wordEnds.push(position);
   return span;
 });
 introLine.replaceChildren(layoutLine, animatedLine);
 let playbackRun = 0;
+let wordFrame = 0;
+let visibleWords = wordSpans.length;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function showWords(count) {
+  if (visibleWords === count) return;
+  visibleWords = count;
   wordSpans.forEach((word, index) => word.classList.toggle('word-pending', index >= count));
 }
 
 function updateWords() {
-  if (reducedMotion.matches || !Number.isFinite(narration.duration)) return;
-  const progress = Math.min(1, narration.currentTime / narration.duration);
-  const count = wordEnds.filter(end => end <= position * progress).length;
-  showWords(Math.min(count + 1, wordSpans.length));
+  const time = narration.currentTime;
+  const nextWord = wordStarts.findIndex(start => start > time);
+  showWords(nextWord < 0 ? wordSpans.length : nextWord);
+}
+
+function animateWords() {
+  if (narration.paused || reducedMotion.matches) return;
+  updateWords();
+  wordFrame = window.requestAnimationFrame(animateWords);
 }
 
 function stopLine() {
   playbackRun++;
+  window.cancelAnimationFrame(wordFrame);
   narration.pause();
   showWords(wordSpans.length);
   listen.textContent = '▶ Послушать';
   listen.setAttribute('aria-pressed', 'false');
 }
 
-narration.addEventListener('timeupdate', () => {
-  if (!narration.paused) updateWords();
+narration.addEventListener('playing', () => {
+  window.cancelAnimationFrame(wordFrame);
+  animateWords();
 });
 narration.addEventListener('ended', stopLine);
 narration.addEventListener('error', stopLine);
@@ -238,7 +251,7 @@ listen.addEventListener('click', async () => {
   const run = ++playbackRun;
   listen.textContent = '■ Остановить';
   listen.setAttribute('aria-pressed', 'true');
-  if (!reducedMotion.matches) showWords(1);
+  if (!reducedMotion.matches) showWords(0);
 
   try {
     narration.currentTime = 0;

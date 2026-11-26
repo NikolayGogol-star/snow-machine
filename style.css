@@ -104,7 +104,8 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 #intro-line{display:grid}
 #intro-line>span{grid-area:1/1}
 .line-space{visibility:hidden}
-.word-pending{visibility:hidden}
+.intro-word{opacity:1;transition:opacity 220ms ease-out}
+.intro-word.word-pending{opacity:0;transition:none}
 @media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}}
 
 .hero-copy blockquote{
