@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#100d26">
+<title>Операция «Рождественский снег»</title>
+<link rel="stylesheet" href="style.css">
+<script src="game.js" defer></script>
+</head>
+<body>
+<header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
+<main>
+<section id="intro" class="screen hero">
+  <div class="hero-art"><img src="machine.jpg" alt="Волшебная машина для снега в секретной лаборатории"><img class="hero-mascot" src="govorusha.png" alt="Говоруша"></div>
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="signal"></span> Срочный сигнал</p>
+    <h1 tabindex="-1">Операция<br>«Рождественский <em>снег»</em></h1>
+    <blockquote><b>Говоруша</b><p>Волшебная машина, которая создаёт рождественский снег, сломалась! Все снежинки исчезли, а главный учёный-эльф пропал, оставив только загадочную записку.</p></blockquote>
+    <button class="primary" id="open-note">Открыть записку <span aria-hidden="true">↗</span></button>
+  </div>
+</section>
+<section id="lab" class="screen centered" hidden>
+  <p class="eyebrow">Секретная лаборатория</p>
+  <h1 tabindex="-1">Пять ингредиентов</h1>
+  <div class="speech"><div class="owl-mini" aria-hidden="true"></div><p><b>Говоруша</b>Сегодня вы — младшие учёные секретной лаборатории. Вам предстоит восстановить пять компонентов волшебной формулы!</p></div>
+  <p class="hint">После каждого испытания нажмите на баночку, чтобы узнать её название.</p>
+  <div id="lab-jars" class="shelf"></div>
+  <p id="lab-count" class="counter" role="status">Найдено 0 из 5</p>
+  <button id="next" class="primary" disabled>К котелку <span aria-hidden="true">→</span></button>
+</section>
+<section id="mix" class="screen centered" hidden>
+  <p class="eyebrow">Перезапуск машины</p>
+  <h1 tabindex="-1">Волшебный котелок</h1>
+  <p class="hint">Перетащите баночки в котелок или нажмите на них.</p>
+  <div id="mix-jars" class="shelf mix-shelf"></div>
+  <div id="pot" class="pot" role="img" aria-label="Волшебный котелок"><div class="pot-picture"></div></div>
+  <p class="counter" id="mix-status" role="status">Добавлено 0 из 6</p>
+  <form id="spell" hidden>
+    <label for="word">Какое волшебное слово запустит машину?</label>
+    <div class="answer"><input id="word" name="word" lang="en" placeholder="Слово по-английски" required autocomplete="off" autocapitalize="none" spellcheck="false"><button class="primary">Запустить</button></div>
+    <p id="feedback" role="status"></p>
+  </form>
+</section>
+<section id="success" class="screen centered celebration" hidden>
+  <div class="joyful-owl" role="img" aria-label="Радостный Говоруша держит снежинку"></div>
+  <p class="eyebrow">Машина работает!</p>
+  <h1 tabindex="-1">Снег вернулся!</h1>
+  <div class="speech"><p><b>Говоруша</b>Ура, младшие учёные! Вы спасли рождественский снег. Смотрите, как красиво!</p></div>
+  <button id="restart" class="secondary">Сыграть ещё раз</button>
+</section>
+</main>
+<div id="snow" aria-hidden="true"></div>
+<dialog id="note" aria-labelledby="note-title">
+  <button class="close" id="close-note" aria-label="Закрыть записку">×</button>
+  <div class="note-symbol" aria-hidden="true">❄</div>
+  <div lang="en"><h2 id="note-title">EMERGENCY!</h2>
+  <p>The Snow Machine is broken!<br>Christmas is in danger!</p>
+  <p>Find the five secret ingredients.<br>Restart the machine before it's too late!</p></div>
+  <button class="primary" id="start">За дело! <span aria-hidden="true">→</span></button>
+</dialog>
+</body>
+</html>
