@@ -227,7 +227,6 @@ function stopLine() {
   showWords(wordSpans.length);
   listen.textContent = '▶ Послушать';
   listen.setAttribute('aria-pressed', 'false');
-  byId('intro').classList.remove('speaking');
 }
 
 listen.addEventListener('click', () => {
@@ -241,13 +240,15 @@ listen.addEventListener('click', () => {
 
   const narration = new SpeechSynthesisUtterance(line);
   const voices = speech.getVoices();
-  const russian = voices.find(voice => voice.lang.toLowerCase().startsWith('ru'));
+  const russianVoices = voices.filter(voice => voice.lang.toLowerCase().startsWith('ru'));
+  const childVoice = russianVoices.find(voice => /child|kid|детск|реб[её]нок/i.test(voice.name));
+  const russian = childVoice || russianVoices[0];
   narration.lang = 'ru-RU';
   if (russian) narration.voice = russian;
-  narration.rate = .92;
+  narration.rate = .87;
+  narration.pitch = childVoice ? 1 : 1.62;
   listen.textContent = '■ Остановить';
   listen.setAttribute('aria-pressed', 'true');
-  byId('intro').classList.add('speaking');
 
   narration.onboundary = event => {
     if (run !== speechRun || event.name !== 'word' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

@@ -105,9 +105,6 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
 #intro-line>span{grid-area:1/1}
 .line-space{visibility:hidden}
 .word-pending{visibility:hidden}
-.hero-art img.hero-mascot{animation:sob 2.1s ease-in-out infinite;transform-origin:bottom center}
-.hero.speaking .hero-mascot{animation:sob .52s ease-in-out infinite}
-@keyframes sob{0%,100%{transform:none}23%{transform:scaleY(.992) rotate(-.65deg)}37%{transform:scaleY(.976) rotate(.55deg)}52%{transform:scaleY(.993)}}
 @media(max-width:780px){.hero{padding-top:clamp(154px,30svh,340px)}.hero-copy blockquote{margin:13px 0 15px;padding:10px 14px}}
 
 .hero-copy blockquote{
@@ -195,4 +192,15 @@ body:has(#intro:not([hidden])) .top{display:none}
   .hero:not(.splash) .hero-art{bottom:min(220px,34svh)}
   .hero:not(.splash) .mascot-stage{left:auto;right:3%;bottom:2%;width:min(63vw,42svh)}
   .hero:not(.splash)::before{background:linear-gradient(180deg,transparent 49%,#100d2666 62%,#100d26 76%)}
+}
+
+.hero:not(.splash) .hero-copy{width:min(52vw,900px)}
+.hero-copy blockquote{padding:clamp(18px,2vw,34px)}
+.hero-copy blockquote .speaker{margin-bottom:10px}
+.hero-copy blockquote .speaker b,.hero-copy .listen{font-size:clamp(.86rem,1.15vw,1.15rem)}
+#intro-line{font-size:clamp(1.2rem,2.3vw,2.8rem);font-weight:650;line-height:1.38}
+@media(max-width:780px){
+  .hero:not(.splash) .hero-copy{width:100%}
+  .hero-copy blockquote{padding:13px 16px}
+  #intro-line{font-size:clamp(1.1rem,3.9vw,1.45rem)}
 }
