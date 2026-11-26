@@ -49,10 +49,11 @@ blockquote p,.speech p{margin:0}
 .pot.target{outline:2px dashed #a4e1ff;background:#a4e1ff24}
 .pot.grumble .pot-picture{animation:shake .5s ease both}
 @keyframes shake{15%,45%,75%{transform:translateX(-8px) rotate(-4deg)}30%,60%,90%{transform:translateX(8px) rotate(4deg)}}
-#spell{margin:13px auto 0;width:min(100%,510px);padding:16px;background:#ffffff0a;border:1px solid var(--line);border-radius:15px}
-#spell label{display:block;margin-bottom:10px;font-weight:700}
-.answer{display:flex;gap:8px}
-.answer input{min-width:0;width:100%;padding:10px;border-radius:10px;border:1px solid #b5a1e170;background:#100d26;color:var(--ink)}
+#spell{margin:13px auto 0;width:min(100%,510px);padding:clamp(9px,3vw,16px);background:#ffffff0a;border:1px solid var(--line);border-radius:15px}
+#spell-question{margin:0 0 4px;font-weight:750}
+#spell-hint{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+.answer{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:clamp(3px,1vw,7px);margin-bottom:12px}
+.answer input{min-width:0;width:100%;aspect-ratio:1;padding:0;box-sizing:border-box;border-radius:7px;border:1px solid #b5a1e170;background:#100d26;color:var(--ink);text-align:center;font-size:clamp(1rem,3.8vw,1.5rem);font-weight:750}
 #feedback{margin:10px 0 0;color:#ffcfb8}
 #feedback:empty{display:none}
 .joyful-owl{width:min(280px,64vw);height:clamp(180px,32vh,300px);margin:auto;background:url(govorusha.png) center/contain no-repeat;animation:cheer 1.8s ease-in-out infinite alternate;filter:drop-shadow(0 0 32px #c2a3ff70)}

@@ -1,4 +1,5 @@
 const byId = id => document.getElementById(id);
+const magicWord = 'friendship';
 const screens = ['intro', 'lab', 'mix', 'success'];
 const ingredients = [
   {name:'SNOW', translation:'снег', x:2.6, y:1},
@@ -93,7 +94,7 @@ function pour(index) {
       if (currentRound !== round) return;
       byId('mix-status').textContent = 'Все баночки в котелке. Чего-то не хватает…';
       byId('spell').hidden = false;
-      byId('word').focus();
+      letterFields[0].focus();
     }, 700);
   } else if (document.activeElement === jar || document.activeElement === document.body) {
     byId('mix-jars').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
@@ -157,11 +158,54 @@ pot.addEventListener('drop', event => {
   if (dragIndex !== null) pour(dragIndex);
   clearDrop();
 });
+const letters = byId('letters');
+const letterFields = Array.from(magicWord, (_, index) => {
+  const field = document.createElement('input');
+  field.type = 'text';
+  field.lang = 'en';
+  field.autocomplete = 'off';
+  field.autocapitalize = 'none';
+  field.spellcheck = false;
+  field.maxLength = 1;
+  field.setAttribute('aria-label', 'Буква ' + (index + 1));
+  field.addEventListener('focus', () => field.select());
+  field.addEventListener('input', () => {
+    field.value = field.value.toLowerCase().replace(/[^a-z]/g, '');
+    byId('feedback').textContent = '';
+    if (field.value) letterFields[index + 1]?.focus();
+  });
+  field.addEventListener('keydown', event => {
+    if (event.key === 'Backspace' && !field.value && index > 0) {
+      event.preventDefault();
+      letterFields[index - 1].value = '';
+      letterFields[index - 1].focus();
+    }
+  });
+  field.addEventListener('paste', event => {
+    const text = event.clipboardData.getData('text').toLowerCase().replace(/[^a-z]/g, '');
+    event.preventDefault();
+    if (!text) return;
+    const start = text.length >= magicWord.length ? 0 : index;
+    const pasted = text.slice(0, magicWord.length - start);
+    [...pasted].forEach((letter, offset) => { letterFields[start + offset].value = letter; });
+    letterFields[Math.min(start + pasted.length, magicWord.length - 1)].focus();
+    byId('feedback').textContent = '';
+  });
+  letters.append(field);
+  return field;
+});
+
 byId('spell').addEventListener('submit', event => {
   event.preventDefault();
-  if (byId('word').value.trim().toLowerCase() !== 'friendship') {
+  const empty = letterFields.find(field => !field.value);
+  if (empty) {
+    byId('feedback').textContent = 'Заполните все квадратики.';
+    empty.focus();
+    return;
+  }
+  if (letterFields.map(field => field.value).join('') !== magicWord) {
     byId('feedback').textContent = 'Котелок всё ещё молчит. Попробуйте ещё раз!';
-    byId('word').select();
+    letterFields[0].focus();
     return;
   }
   go('success');
