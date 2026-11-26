@@ -262,5 +262,23 @@ listen.addEventListener('click', () => {
 });
 
 byId('open-note').addEventListener('click', stopLine);
-byId('restart').addEventListener('click', () => animateLine(130));
-animateLine(130);
+const discover = byId('discover');
+const introBubble = byId('intro-bubble');
+const openNote = byId('open-note');
+
+function setStoryVisible(visible) {
+  byId('intro').classList.toggle('splash', !visible);
+  discover.hidden = visible;
+  introBubble.hidden = !visible;
+  openNote.hidden = !visible;
+}
+
+discover.addEventListener('click', () => {
+  setStoryVisible(true);
+  listen.focus({preventScroll:true});
+  listen.click();
+});
+byId('restart').addEventListener('click', () => {
+  stopLine();
+  setStoryVisible(false);
+});

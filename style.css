@@ -140,3 +140,22 @@ body:has(#intro:not([hidden])) main{max-width:none;padding:0}
   .hero-copy blockquote::before{right:19%;top:auto;bottom:calc(100% - 1px);width:30px;height:23px;clip-path:polygon(0 100%,74% 0,100% 100%)}
   .hero-copy #open-note{margin-top:15px}
 }
+
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+body:has(#intro:not([hidden])) .top{display:none}
+.hero{min-height:100svh}
+.hero-art,.hero::before{inset:0}
+.hero.splash::before{background:linear-gradient(180deg,transparent 58%,#100d26b3 95%)}
+.hero.splash{align-items:flex-end;justify-content:center;padding-bottom:clamp(40px,10svh,110px)}
+.hero.splash .hero-copy{width:auto}
+.hero.splash .hero-mascot{left:auto;right:9%;bottom:18%;height:72%;width:min(56vw,680px)}
+.hero:not(.splash) .hero-copy{margin-top:6vh}
+.hero-copy blockquote{animation:enter .28s ease both}
+@media(max-width:780px){
+  .hero.splash{padding-top:24px}
+  .hero.splash .hero-mascot{top:auto;bottom:22%;right:3%;width:min(77vw,540px);height:min(58svh,520px)}
+  .hero:not(.splash){padding-top:max(210px,40svh)}
+  .hero:not(.splash) .hero-copy{margin-top:0}
+  .hero:not(.splash) .hero-mascot{top:clamp(23px,6svh,65px)}
+  .hero-copy #open-note{margin-top:0}
+}
