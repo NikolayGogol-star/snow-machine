@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
 <link rel="stylesheet" href="style.css?v=18">
-<script src="game.js?v=21" defer></script>
+<script src="game.js?v=22" defer></script>
 </head>
 <body>
 <header class="top"><span class="brand"><b aria-hidden="true">❄</b> Снежная лаборатория</span><div class="steps" aria-label="Этапы"><span aria-current="step">01 <i>Сигнал</i></span><span>02 <i>Формула</i></span><span>03 <i>Перезапуск</i></span></div></header>
@@ -72,6 +72,7 @@
 </main>
 <div id="snow" aria-hidden="true"></div>
 <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Музыка и звуковые эффекты" aria-pressed="true" title="Музыка и звуковые эффекты"><span aria-hidden="true">♪</span></button>
+<audio id="note-sound" src="note-open.mp3" preload="auto"></audio>
 <dialog id="note" aria-labelledby="note-title">
   <button class="close" id="close-note" aria-label="Закрыть записку">×</button>
   <div class="note-symbol" aria-hidden="true">❄</div>

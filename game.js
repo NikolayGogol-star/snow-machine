@@ -11,6 +11,7 @@ const ingredients = [
 const revealed = new Set();
 const poured = new Set();
 const note = byId('note');
+const noteSound = byId('note-sound');
 const pot = byId('pot');
 const ingredientSound = byId('ingredient-sound');
 const failedSound = byId('cauldron-failed');
@@ -132,7 +133,7 @@ function updateSoundLevels() {
   machineStart.volume = .62;
   failedSound.volume = .65;
   finaleTrack.volume = machineStart.paused ? .55 : .17;
-  [introMusic, labMusic, machineStart, finaleTrack, ingredientSound, failedSound].forEach(track => {
+  [introMusic, labMusic, machineStart, finaleTrack, ingredientSound, failedSound, noteSound].forEach(track => {
     track.muted = !musicEnabled;
   });
   if (!audio) return;
@@ -323,7 +324,6 @@ function reset() {
   byId('feedback').textContent = '';
 }
 
-byId('open-note').addEventListener('click', () => note.showModal());
 byId('close-note').addEventListener('click', () => note.close());
 byId('start').addEventListener('click', () => { note.close(); go('lab'); });
 byId('next').addEventListener('click', () => {
@@ -486,10 +486,18 @@ listen.addEventListener('click', async () => {
   }
 });
 
-byId('open-note').addEventListener('click', stopLine);
 const discover = byId('discover');
 const introBubble = byId('intro-bubble');
 const openNote = byId('open-note');
+
+openNote.addEventListener('click', () => {
+  stopLine();
+  note.showModal();
+  if (!musicEnabled) return;
+  noteSound.volume = .7;
+  noteSound.currentTime = 0;
+  noteSound.play().catch(() => {});
+});
 
 function setStoryVisible(visible) {
   byId('intro').classList.toggle('splash', !visible);
