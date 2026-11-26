@@ -32,7 +32,6 @@ blockquote p,.speech p{margin:0}
 .secondary{color:var(--ink);border-color:var(--line);background:#ffffff0b}
 .centered{text-align:center}
 .centered .speech{width:min(100%,660px);margin:18px auto;text-align:left;display:flex;align-items:center;gap:14px}
-.owl-mini{flex:0 0 55px;height:55px;background: url(govorusha.png) center/contain no-repeat}
 .hint{color:var(--muted);margin:14px 0}
 .shelf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,1.5vw,18px);max-width:850px;margin:22px auto 0}
 .mix-shelf{grid-template-columns:repeat(6,minmax(0,1fr));max-width:760px;margin-top:16px}
@@ -204,4 +203,43 @@ body:has(#intro:not([hidden])) .top{display:none}
   .hero:not(.splash) .hero-copy{width:100%}
   .hero-copy blockquote{padding:13px 16px}
   #intro-line{font-size:clamp(1.1rem,3.9vw,1.45rem)}
+}
+
+.lab-dialogue{
+  display:flex;
+  align-items:center;
+  gap:clamp(12px,2vw,26px);
+  width:min(100%,850px);
+  margin:18px auto;
+  text-align:left;
+}
+.lab-dialogue img{
+  flex:none;
+  width:clamp(62px,13vw,146px);
+  height:auto;
+}
+.lab-dialogue .lab-bubble{
+  position:relative;
+  flex:1;
+  margin:0;
+  padding:clamp(12px,2vw,25px);
+  border:1px solid #ead5ad;
+  border-radius:21px;
+  background:#fff4df;
+  color:#29213e;
+  font-size:clamp(1rem,1.8vw,1.55rem);
+  font-weight:650;
+  line-height:1.4;
+  box-shadow:0 10px 30px #100d2659;
+}
+.lab-bubble b{color:#5a3861}
+.lab-bubble::before{
+  content:"";
+  position:absolute;
+  right:calc(100% - 1px);
+  top:36%;
+  width:clamp(14px,2vw,26px);
+  height:24px;
+  background:#fff4df;
+  clip-path:polygon(100% 0,100% 100%,0 68%);
 }

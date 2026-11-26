@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#100d26">
 <title>Операция «Рождественский снег»</title>
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 <script src="game.js?v=11" defer></script>
 </head>
 <body>
@@ -25,7 +25,13 @@
 <section id="lab" class="screen centered" hidden>
   <p class="eyebrow">Секретная лаборатория</p>
   <h1 tabindex="-1">Пять ингредиентов</h1>
-  <div class="speech"><div class="owl-mini" aria-hidden="true"></div><p><b>Говоруша</b>Сегодня вы — младшие учёные секретной лаборатории. Вам предстоит восстановить пять компонентов волшебной формулы!</p></div>
+  <div class="lab-dialogue">
+    <img src="govorusha-sad.png" alt="" width="650" height="650">
+    <blockquote class="lab-bubble">
+      <b>Говоруша</b>
+      <p>Сегодня вы — младшие учёные секретной лаборатории. Вам предстоит восстановить пять компонентов волшебной формулы!</p>
+    </blockquote>
+  </div>
   <p class="hint">После каждого испытания нажмите на баночку, чтобы узнать её название.</p>
   <div id="lab-jars" class="shelf"></div>
   <p id="lab-count" class="counter" role="status">Найдено 0 из 5</p>
