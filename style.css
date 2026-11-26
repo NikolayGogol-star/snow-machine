@@ -76,3 +76,23 @@ dialog .primary:hover{color:#24162c}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}.flake{animation:none!important;top:var(--rest)}}
 .hero-art{position:relative;isolation:isolate}
 .hero-art img.hero-mascot{position:absolute;right:4%;bottom:7%;width:28%;height:53%;aspect-ratio:auto;object-fit:contain;object-position:bottom;filter:drop-shadow(0 9px 9px #17102dba)}
+
+/* The opening illustration fills the viewport behind the story controls. */
+body:has(#intro:not([hidden])){background:#100d26}
+body:has(#intro:not([hidden])) .top{position:relative;z-index:1;max-width:none;background:#100d26a8}
+body:has(#intro:not([hidden])) main{max-width:none;padding:0}
+.hero{position:relative;min-height:calc(100svh - 73px);display:flex;align-items:center;justify-content:flex-end;padding:clamp(24px,5vw,82px);isolation:isolate;animation:none}
+.hero-art{position:absolute;inset:-73px 0 0;z-index:-2;border:0;border-radius:0;box-shadow:none}
+.hero-art img:first-child{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center}
+.hero::before{content:"";position:absolute;inset:-73px 0 0;z-index:-1;background:linear-gradient(90deg,#100d2610 26%,#100d2699 56%,#100d26eb 100%);pointer-events:none}
+.hero-art img.hero-mascot{width:clamp(100px,18vw,245px);height:38%;right:auto;left:35%;bottom:8%}
+.hero-copy{width:min(100%,510px);padding:0;text-shadow:0 2px 12px #100d26}
+.hero-copy blockquote{background:#100d26bd}
+.hero-copy button{text-shadow:none}
+@media(max-width:780px){
+  .hero{align-items:flex-end;min-height:calc(100svh - 73px);padding:clamp(20px,5vw,42px);padding-top:clamp(255px,43svh,440px)}
+  .hero-art img:first-child{object-position:38% 30%}
+  .hero::before{background:linear-gradient(180deg,#100d2615 20%,#100d2677 40%,#100d26f5 73%,#100d26 100%)}
+  .hero-art img.hero-mascot{width:clamp(95px,27vw,160px);height:clamp(120px,23svh,220px);left:auto;right:7%;top:clamp(100px,18svh,185px);bottom:auto}
+  .hero-copy{width:100%}
+}
